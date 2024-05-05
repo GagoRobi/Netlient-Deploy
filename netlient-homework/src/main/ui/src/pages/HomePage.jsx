@@ -24,7 +24,7 @@ export default function HomePage() {
     }
 
     async function authenticateUser() {
-        const response = await fetch("api/user/auth", {
+        const response = await fetch("https://netlient-deploy-backend.onrender.com/api/user/auth", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({username: userName, password})
@@ -34,7 +34,7 @@ export default function HomePage() {
     }
 
     async function registerUser() {
-        const response = await fetch("api/user/register", {
+        const response = await fetch("https://netlient-deploy-backend.onrender.com/api/user/register", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({username: userName, password})
