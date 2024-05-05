@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://netlient-deploy-backend.onrender.com'
+      '/api': 'https://netlient-deploy-backend.onrender.com/'
     },
   },
 })
