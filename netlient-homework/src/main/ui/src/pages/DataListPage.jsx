@@ -8,14 +8,12 @@ import {
     fetchSortedDataList
 } from '../api/apiService';
 import PageNavigation from "../components/PageNavigation.jsx";
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 import PaginationSizeSelect from "../components/PaginationSizeSelect.jsx";
 import SearchInputField from "../components/SearchInputField.jsx";
 import DataBaseTable from "../components/DataBaseTable.jsx";
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
+import pdfFonts from "../../vfs_fontes.ts";
+import  pdfMake from "pdfmake/build/pdfmake";
+pdfMake.vfs = pdfFonts;
 
 export default function DataListPage() {
     const [currentPageNumber, setCurrentPageNumber] = useState(0);
@@ -97,7 +95,7 @@ export default function DataListPage() {
         if (!filtered) {
             if (sorted) {
                 fetchSortedDataList(lastCategory, currentPageNumber, recordPerPage, asc, setDataList, setTotalElements, setLastUrl, setNumberOfTotalPages);
-            }else{
+            } else {
                 fetchDataList(currentPageNumber, recordPerPage, setDataList, setNumberOfTotalPages, setTotalElements, setLastUrl, setDBSize);
             }
         } else {
@@ -107,126 +105,125 @@ export default function DataListPage() {
     }
 
 
+    function createPagination() {
+        let items = [];
+        for (let i = 0; i < numberOfTotalPages; i++) {
+            items.push(
+                <Pagination.Item key={i + 1} active={i + 1 === currentPageNumber + 1}>
+                    {i + 1}
+                </Pagination.Item>,
+            );
+        }
 
-function createPagination() {
-    let items = [];
-    for (let i = 0; i < numberOfTotalPages; i++) {
-        items.push(
-            <Pagination.Item key={i + 1} active={i + 1 === currentPageNumber + 1}>
-                {i + 1}
-            </Pagination.Item>,
-        );
+        setPaginationItems(items);
     }
 
-    setPaginationItems(items);
-}
+    useEffect(() => {
+        fetchDataList(currentPageNumber, recordPerPage, setDataList, setNumberOfTotalPages, setTotalElements, setLastUrl, setDBSize);
+    }, []);
 
-useEffect(() => {
-    fetchDataList(currentPageNumber, recordPerPage, setDataList, setNumberOfTotalPages, setTotalElements, setLastUrl, setDBSize);
-}, []);
-
-useEffect(() => {
+    useEffect(() => {
         updateDatabase();
-    },[currentPageNumber, recordPerPage,]);
+    }, [currentPageNumber, recordPerPage,]);
 
-useEffect(() => {
-    updateDatabase();
-}, [asc, lastCategory]);
+    useEffect(() => {
+        updateDatabase();
+    }, [asc, lastCategory]);
 
 
-useEffect(() => {
-    setCurrentPageNumber(0)
-    if (searchInput.length < 1) {
-        setFiltered(false);
-    } else {
-        setFiltered(true);
+    useEffect(() => {
+        setCurrentPageNumber(0)
+        if (searchInput.length < 1) {
+            setFiltered(false);
+        } else {
+            setFiltered(true);
+        }
+        fetchFilteredLists();
+        //createPagination();
+    }, [searchInput]);
+
+    useEffect(() => {
+        createPagination();
+    }, [numberOfTotalPages, currentPageNumber])
+
+    function handleSizeSelect(e) {
+        setCurrentPageNumber(0);
+        const selectedValue = e.target.value;
+        if (selectedValue === "all") {
+            setRecordPerPage(dbSize);
+        } else {
+            setRecordPerPage(parseInt(selectedValue));
+        }
+        setSorted(false);
     }
-    fetchFilteredLists();
-    //createPagination();
-}, [searchInput]);
 
-useEffect(() => {
-    createPagination();
-}, [numberOfTotalPages, currentPageNumber])
+    return (
+        <div style={{minHeight: "100vh", background: "#fab114"}}>
+            <Navbar style={{
+                margin: "0",
+                padding: "10px",
+                background: "#fab114",
+                display: 'flex',
+                justifyContent: 'space-between'
+            }}>
+                <div style={{float: "left"}}>
+                    <SearchInputField
+                        setSearchInput={setSearchInput}
+                    />
+                </div>
+                <Button style={{background: "#7a11fa", color: "#fab114", fontWeight: "bold"}}
+                        onClick={downloadAllResultsToPDF}>Találatok Letöltése</Button>
+                <div style={{float: "right"}}>
+                    <PaginationSizeSelect
+                        handleSelect={handleSizeSelect}
+                        totalElements={totalElements}
+                        setCurrentPageNumber={setCurrentPageNumber}
+                        setRecordPerPage={setRecordPerPage}
+                        setSorted={setSorted}
+                    />
+                    {dataList?.length > 0 &&
+                        <PageNavigation
+                            items={paginationItems}
+                            setPageNumber={setCurrentPageNumber}
+                        />
+                    }
+                </div>
+            </Navbar>
 
-function handleSizeSelect(e) {
-    setCurrentPageNumber(0);
-    const selectedValue = e.target.value;
-    if (selectedValue === "all") {
-        setRecordPerPage(dbSize);
-    } else {
-        setRecordPerPage(parseInt(selectedValue));
-    }
-    setSorted(false);
-}
+            {dataList?.length > 0 ?
+                <div>
+                    <DataBaseTable
+                        dataList={dataList}
+                        sortTable={sortTable}
+                        searchInput={searchInput}
+                    />
+                </div>
+                :
+                <div>
+                    <Card style={{maxWidth: "fit-content", padding: "5px", margin: "auto"}}>
+                        <p style={{fontSize: "x-large", fontWeight: "bold"}}>
+                            No Record Found
+                        </p>
+                    </Card>
+                </div>
+            }
 
-return (
-    <div style={{minHeight: "100vh", background: "#fab114"}}>
-        <Navbar style={{
-            margin: "0",
-            padding: "10px",
-            background: "#fab114",
-            display: 'flex',
-            justifyContent: 'space-between'
-        }}>
-            <div style={{float: "left"}}>
-                <SearchInputField
-                    setSearchInput={setSearchInput}
-                />
-            </div>
-            <Button style={{background: "#7a11fa", color: "#fab114", fontWeight: "bold"}}
-                    onClick={downloadAllResultsToPDF}>Találatok Letöltése</Button>
-            <div style={{float: "right"}}>
-                <PaginationSizeSelect
-                    handleSelect={handleSizeSelect}
-                    totalElements={totalElements}
-                    setCurrentPageNumber={setCurrentPageNumber}
-                    setRecordPerPage={setRecordPerPage}
-                    setSorted={setSorted}
-                />
-                {dataList?.length > 0 &&
+            <Navbar style={{padding: "12px", paddingTop: "0", display: 'flex', justifyContent: 'space-between'}}>
+                <Link to={"/"}>
+                    <Button style={{
+                        background: "#7a11fa",
+                        color: "#fab114",
+                        fontWeight: "bold",
+                        float: "left"
+                    }}>Kijelentkezés</Button>
+                </Link>
+                <div style={{maxWidth: "fit-content", marginTop: "10px", float: "right"}}>
                     <PageNavigation
                         items={paginationItems}
                         setPageNumber={setCurrentPageNumber}
                     />
-                }
-            </div>
-        </Navbar>
-
-        {dataList?.length > 0 ?
-            <div>
-                <DataBaseTable
-                    dataList={dataList}
-                    sortTable={sortTable}
-                    searchInput={searchInput}
-                />
-            </div>
-            :
-            <div>
-                <Card style={{maxWidth: "fit-content", padding: "5px", margin: "auto"}}>
-                    <p style={{fontSize: "x-large", fontWeight: "bold"}}>
-                        No Record Found
-                    </p>
-                </Card>
-            </div>
-        }
-
-        <Navbar style={{padding: "12px", paddingTop: "0", display: 'flex', justifyContent: 'space-between'}}>
-            <Link to={"/"}>
-                <Button style={{
-                    background: "#7a11fa",
-                    color: "#fab114",
-                    fontWeight: "bold",
-                    float: "left"
-                }}>Kijelentkezés</Button>
-            </Link>
-            <div style={{maxWidth: "fit-content", marginTop: "10px", float: "right"}}>
-                <PageNavigation
-                    items={paginationItems}
-                    setPageNumber={setCurrentPageNumber}
-                />
-            </div>
-        </Navbar>
-    </div>
-)
+                </div>
+            </Navbar>
+        </div>
+    )
 }
