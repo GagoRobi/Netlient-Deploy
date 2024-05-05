@@ -1,0 +1,33 @@
+:root {
+    background-color: #230B55;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 800'%3E%3Cg fill-opacity='0.86'%3E%3Ccircle fill='%23230B55' cx='400' cy='400' r='600'/%3E%3Ccircle fill='%23730060' cx='400' cy='400' r='500'/%3E%3Ccircle fill='%23b40e5a' cx='400' cy='400' r='400'/%3E%3Ccircle fill='%23e44548' cx='400' cy='400' r='300'/%3E%3Ccircle fill='%23fe822c' cx='400' cy='400' r='200'/%3E%3Ccircle fill='%23FFC107' cx='400' cy='400' r='100'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    place-items: center;
+}
+#root {
+    background-color: #230B55;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 800'%3E%3Cg fill-opacity='0.86'%3E%3Ccircle fill='%23230B55' cx='400' cy='400' r='600'/%3E%3Ccircle fill='%23730060' cx='400' cy='400' r='500'/%3E%3Ccircle fill='%23b40e5a' cx='400' cy='400' r='400'/%3E%3Ccircle fill='%23e44548' cx='400' cy='400' r='300'/%3E%3Ccircle fill='%23fe822c' cx='400' cy='400' r='200'/%3E%3Ccircle fill='%23FFC107' cx='400' cy='400' r='100'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+
+}
+
+.flexbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    place-items: center;
+    margin-top: 29vh;
+}
+
+#login-card{
+    background: none;
+    border: none;
+    backdrop-filter: blur(55px);
+    align-self: center;
+
+}
