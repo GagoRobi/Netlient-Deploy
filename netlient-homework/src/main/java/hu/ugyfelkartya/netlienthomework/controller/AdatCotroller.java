@@ -1,14 +1,14 @@
 package hu.ugyfelkartya.netlienthomework.controller;
 
+import hu.ugyfelkartya.netlienthomework.model.Dto.AdatDTO;
 import hu.ugyfelkartya.netlienthomework.model.entity.Adat;
 import hu.ugyfelkartya.netlienthomework.service.AdatService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/adat")
@@ -57,5 +57,9 @@ public class AdatCotroller {
         return adatService.findAllByNameContaining(namePart, pageRequest);
     }
 
+    @PostMapping("/database")
+    public List<Adat> save(@RequestBody List<AdatDTO> adatDTOList) {
+        return adatService.addAdatArray(adatDTOList);
+    }
 
 }
